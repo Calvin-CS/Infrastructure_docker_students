@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: students
+  namespace: production
+  labels:
+    app: students
+  annotations: 
+    "builddate": "20220809-01"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: students
+  template:
+    metadata:
+      labels:
+        app: students
+        hostname: students
+    spec:
+      hostname: students
+      dnsPolicy: Default
+      dnsConfig:
+        searches:
+          - cs.calvin.edu
+      containers:
+      - name: students
+        image: {{ .Values.image.registry }}/{{ .Values.image.name }}:{{ default "latest" .Values.image.tag }}
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 15
+        volumeMounts:
+        - mountPath: /home
+          name: mount0
+          readOnly: true
+      volumes:
+      - name: mount0
+        nfs:
+          path: /export/home
+          server: aznfs-int.cs.calvin.edu
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: students
+  namespace: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: students

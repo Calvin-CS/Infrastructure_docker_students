@@ -1,0 +1,4 @@
+apiVersion: v2
+name: students
+description: A Helm chart for Kubernetes deployment of students web server
+version: 0.1.0
