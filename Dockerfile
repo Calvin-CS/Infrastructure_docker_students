@@ -27,7 +27,8 @@ RUN apt update -y && \
     nfs-common \
     krb5-user \
     sssd-krb5 \
-    coreutils
+    coreutils && \
+    rm -f /var/lib/apt/lists/deb.debian.org*
 
 # add CalvinAD trusted root certificate
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/CalvinCollege-ad-CA.crt /etc/ssl/certs
@@ -106,6 +107,12 @@ COPY --chmod=0644 inc/index.html /var/www/html/index.html
 COPY --chmod=0644 inc/readdirections.html /var/www/html/readdirections.html
 COPY --chmod=0644 inc/test.php /var/www/html/test.php
 
+# Additional packages for CGI support
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
+    libcgi-pm-perl && \
+    rm -f /var/lib/apt/lists/deb.debian.org*
+
 # Expose the services
 EXPOSE 80
 
@@ -115,4 +122,3 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TERM xterm-256color
-
