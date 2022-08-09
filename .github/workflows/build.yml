@@ -1,0 +1,36 @@
+name: Push the latest build
+
+on:
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Helm
+        uses: Azure/setup-helm@v1
+        with:
+          version: v3.9.0
+      - name: Get AKS Credentials
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: CS_Infrastructure_AKS
+          cluster-name: Infrastructure
+      - name: Run Helm Deploy
+        run: |
+          helm upgrade \
+            --install \
+            --create-namespace \
+            --atomic \
+            --wait \
+            --namespace production \
+            students \
+           ./kubernetes/students \
+            --set image.repository=${{ secrets.ACR_NAME }}
