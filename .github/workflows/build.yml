@@ -34,6 +34,10 @@ jobs:
           context: .
           tags: ${{secrets.ACR_NAME}}/students:latest
           push: true
+          secrets: |
+            LDAP_BIND_USER=${{ secrets.LDAP_BIND_USER }}
+            LDAP_BIND_PASSWORD=${{ secrets.LDAP_BIND_PASSWORD }}
+            DEFAULT_DOMAIN_SID=${{ secrets.DEFAULT_DOMAIN_SID }}
 
   deploy:
     runs-on: ubuntu-20.04

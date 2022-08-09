@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -p 8080:80 students
+docker run -it -p 8080:80 students /bin/bash
