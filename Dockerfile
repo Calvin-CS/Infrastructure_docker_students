@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG S6_OVERLAY_VERSION=3.1.3.0
 ARG TZ=US/Michigan
-ARG BUILDDATE=20230210-1
+ARG BUILDDATE=20230210-2
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"]
@@ -79,6 +79,8 @@ COPY s6-overlay/ /etc/s6-overlay
 
 # Access control
 RUN echo "ldap_access_filter = memberOf=CN=CS-Admins,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
+#RUN sed -i 's/ldap_uri = .*/ldap_uri = ldaps:\/\/172\.16\.30\.1:636/g' /etc/sssd/sssd.conf
+RUN sed -i 's/ignore_group_members = true/ignore_group_members = false/g' /etc/sssd/sssd.conf
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && \
@@ -118,10 +120,6 @@ RUN apt update -y && \
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions pgsql
-
-# temp debugging of sssd
-#RUN sed -i 's/debug_level = 1/debug_level = 8/g' /etc/sssd/sssd.conf
-RUN sed -i 's/ldap_uri = .*/ldap_uri = ldaps:\/\/172\.16\.30\.1:636/g' /etc/sssd/sssd.conf
 
 # Expose the services
 EXPOSE 80
