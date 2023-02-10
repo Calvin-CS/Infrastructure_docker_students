@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG S6_OVERLAY_VERSION=3.1.3.0
 ARG TZ=US/Michigan
-ARG BUILDDATE=20230210-2
+ARG BUILDDATE=20230210-3
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"]
@@ -79,8 +79,6 @@ COPY s6-overlay/ /etc/s6-overlay
 
 # Access control
 RUN echo "ldap_access_filter = memberOf=CN=CS-Admins,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
-#RUN sed -i 's/ldap_uri = .*/ldap_uri = ldaps:\/\/172\.16\.30\.1:636/g' /etc/sssd/sssd.conf
-RUN sed -i 's/ignore_group_members = true/ignore_group_members = false/g' /etc/sssd/sssd.conf
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && \
