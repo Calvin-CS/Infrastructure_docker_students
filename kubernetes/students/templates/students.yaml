@@ -69,7 +69,7 @@ spec:
   selector:
     app: students
 ---
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: students-{{ default "staging" .Release.Namespace }}
@@ -80,18 +80,18 @@ spec:
     name: students
   minReplicas: 1
   maxReplicas: 4
-  targetCPUUtilizationPercentage: 80
-  #metrics:
-  #- type: Resource
-  #  resource:
-  #    name: cpu
-  #    target:
-  #      type: Utilization
-  #      averageUtilization: 80
-  #- type: Resource
-  #  resource:
-  #    name: memory
-  #    target:
-  #      type: Utilization
-  #      averageUtilization: 85
+  #targetCPUUtilizationPercentage: 80
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85
 
