@@ -53,9 +53,9 @@ spec:
           readOnly: true
       volumes:
       - name: mount0
-        nfs:
-          path: /export/home
-          server: aznfs-int.cs.calvin.edu
+        persistentVolumeClaim:
+          claimName: pvc-nfs-katzstunnel-home-{{ default "staging" .Release.Namespace }}
+
 ---
 apiVersion: v1
 kind: Service
