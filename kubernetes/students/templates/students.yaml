@@ -18,6 +18,8 @@ spec:
         app: students
         hostname: students
     spec:
+      nodeSelector:
+        CSInfrastructure: "true"
       hostname: students
       dnsPolicy: Default
       dnsConfig:
